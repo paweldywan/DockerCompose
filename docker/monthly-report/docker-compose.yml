@@ -1,0 +1,33 @@
+services:
+  app:
+    image: mcr.microsoft.com/dotnet/aspnet:9.0
+    volumes:
+      - ./app:/app
+    build:
+      context: .
+    restart: unless-stopped
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=${STACK_NAME};Username=postgres;Password=postgres"
+    labels:
+      - "traefik.docker.network=webnet"
+      - "traefik.enable=true"
+      - "traefik.http.routers.web-${STACK_NAME}.rule=Host(`${STACK_NAME}.paweldywan.com`)"
+      - "traefik.http.routers.web-${STACK_NAME}.entrypoints=web"
+      - "traefik.http.routers.websecure-${STACK_NAME}.rule=Host(`${STACK_NAME}.paweldywan.com`)"
+      - "traefik.http.routers.websecure-${STACK_NAME}.entrypoints=websecure"
+      - "traefik.http.routers.websecure-${STACK_NAME}.tls.certresolver=myresolver"
+      - "traefik.http.services.web-${STACK_NAME}.loadbalancer.server.port=8080"
+      - "traefik.http.middlewares.redirect-to-https-${STACK_NAME}.redirectScheme.scheme=https"
+      - "traefik.http.middlewares.redirect-to-https-${STACK_NAME}.redirectScheme.permanent=true"
+      - "traefik.http.routers.web-${STACK_NAME}.middlewares=redirect-to-https-${STACK_NAME}"
+    networks:
+      - default
+      - webnet
+      - db
+
+networks:
+  default:
+  webnet:
+    external: true
+  db:
+    external: true

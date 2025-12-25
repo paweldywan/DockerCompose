@@ -1,0 +1,33 @@
+# Environment files
+.env
+.env.*
+*.env
+!.env.example
+
+# App folders (compiled/published applications)
+**/app/
+
+# Docker volumes and data
+docker/*/data/
+**/volumes/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp

@@ -1,0 +1,28 @@
+services:
+  app:
+    image: mcr.microsoft.com/dotnet/aspnet:8.0
+    volumes:
+      - ./app:/app
+    command: ["dotnet", "/app/${NAME}.Server.dll"]
+    restart: unless-stopped
+    working_dir: /app
+    labels:
+      - "traefik.docker.network=webnet"
+      - "traefik.enable=true"
+      - "traefik.http.routers.web-${STACK_NAME}.rule=Host(`${STACK_NAME}.paweldywan.com`)"
+      - "traefik.http.routers.web-${STACK_NAME}.entrypoints=web"
+      - "traefik.http.routers.websecure-${STACK_NAME}.rule=Host(`${STACK_NAME}.paweldywan.com`)"
+      - "traefik.http.routers.websecure-${STACK_NAME}.entrypoints=websecure"
+      - "traefik.http.routers.websecure-${STACK_NAME}.tls.certresolver=myresolver"
+      - "traefik.http.services.web-${STACK_NAME}.loadbalancer.server.port=8080"
+      - "traefik.http.middlewares.redirect-to-https-${STACK_NAME}.redirectScheme.scheme=https"
+      - "traefik.http.middlewares.redirect-to-https-${STACK_NAME}.redirectScheme.permanent=true"
+      - "traefik.http.routers.web-${STACK_NAME}.middlewares=redirect-to-https-${STACK_NAME}"
+    networks:
+      - default
+      - webnet
+
+networks:
+  default:
+  webnet:
+    external: true
