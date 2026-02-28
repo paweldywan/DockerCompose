@@ -7,6 +7,7 @@ This repository contains multiple Docker Compose configurations for deploying .N
 ```
 DockerCompose/
 ├── local-postgres/          # Local PostgreSQL instance
+├── local-sqlserver/         # Local SQL Server 2025 instance
 └── remote/                  # Production applications
     ├── basic-todo-list/
     ├── data-viewer/
@@ -20,6 +21,22 @@ DockerCompose/
     ├── task-scheduler/
     ├── traefik/            # Reverse proxy & load balancer
     └── weather-forecast/
+```
+
+## Local Databases
+
+Standalone database instances for local development.
+
+| Folder | Database | Port | User | Password |
+|---|---|---|---|---|
+| `local-postgres/` | PostgreSQL | `5432` | `postgres` | `postgres` |
+| `local-sqlserver/` | SQL Server 2025 (Developer) | `1433` | `sa` | `YourStrong!Passw0rd` |
+
+Start a local database:
+
+```bash
+cd local-postgres     # or local-sqlserver
+docker compose up -d
 ```
 
 ## Applications
